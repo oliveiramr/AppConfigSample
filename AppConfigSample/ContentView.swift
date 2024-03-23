@@ -9,22 +9,30 @@ import SwiftUI
 
 struct ContentView: View {
 
+    var managedObject: String? {
+        fetchManagedObject()
+    }
+
     var body: some View {
-
         VStack(spacing: 10) {
-            Text("Objeto Gerenciado").font(.largeTitle)
-            Text(getObject() ?? "Sem objeto gerenciado").font(.title)
+            Text("Objeto Gerenciado")
+                .font(.largeTitle)
 
+            if let object = managedObject {
+                Text(object)
+                    .font(.title)
+            } else {
+                Text("Sem objeto gerenciado")
+                    .font(.title)
+            }
         }
     }
 
-     func fetchAppConfig() -> [String: AnyObject] {
+    private func fetchAppConfig() -> [String: AnyObject] {
+        return UserDefaults.standard.dictionary(forKey: "com.apple.configuration.managed") as? [String: AnyObject] ?? [:]
+    }
 
-           return UserDefaults.standard.dictionary(forKey: "com.apple.configuration.managed") as? [String: AnyObject] ?? [:]
-       }
-
-     func getObject() -> (String)? {
-
+    private func fetchManagedObject() -> String? {
         let appConfig = fetchAppConfig()
 
         guard let managedEndpoint = appConfig["endpoint"] as? String else {
